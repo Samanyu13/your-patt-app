@@ -23,3 +23,8 @@ local.properties
 
 ### macOS ###
 .DS_Store
+
+### Unwanted Files ###
+text_README.md
+how
+.kotlin/
