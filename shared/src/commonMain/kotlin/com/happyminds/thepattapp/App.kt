@@ -4,6 +4,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.*
 import androidx.compose.ui.tooling.preview.Preview
 import com.happyminds.thepattapp.presentation.dashboard.*
+import com.happyminds.thepattapp.presentation.groupdetails.GroupAddExpenseScreen
 import com.happyminds.thepattapp.presentation.groupdetails.GroupDetailsScreen
 import com.happyminds.thepattapp.presentation.groupdetails.GroupDetailsViewModel
 import org.koin.compose.KoinContext
@@ -16,7 +17,8 @@ enum class Screen {
     MiscDetails,
     SettledGroups,
     CreateGroup,
-    AddExpense
+    AddExpense, // From Dashboard
+    GroupAddExpense // From Group Details
 }
 
 @Composable
@@ -58,7 +60,10 @@ fun App() {
                         onBackClick = {
                             currentScreen = Screen.Dashboard
                         },
-                        onShareInvite = { link -> println("Invite: $link") }
+                        onShareInvite = { link -> println("Invite: $link") },
+                        onAddExpenseClick = {
+                            currentScreen = Screen.GroupAddExpense
+                        }
                     )
                 }
                 Screen.MiscDetails -> {
@@ -68,7 +73,10 @@ fun App() {
                         onBackClick = {
                             currentScreen = Screen.Dashboard
                         },
-                        onShareInvite = {}
+                        onShareInvite = {},
+                        onAddExpenseClick = {
+                            currentScreen = Screen.GroupAddExpense
+                        }
                     )
                 }
                 Screen.SettledGroups -> {
@@ -99,6 +107,19 @@ fun App() {
                         onBack = { currentScreen = Screen.Dashboard },
                         onCreateGroup = { currentScreen = Screen.CreateGroup },
                         onSuccess = { currentScreen = Screen.Dashboard }
+                    )
+                }
+                Screen.GroupAddExpense -> {
+                    val groupId = currentGroupId ?: ""
+                    val detailsViewModel = koinInject<GroupDetailsViewModel> { parametersOf(groupId) }
+                    GroupAddExpenseScreen(
+                        viewModel = detailsViewModel,
+                        onBack = {
+                            currentScreen = if (groupId.isEmpty()) Screen.MiscDetails else Screen.GroupDetails
+                        },
+                        onSuccess = {
+                            currentScreen = if (groupId.isEmpty()) Screen.MiscDetails else Screen.GroupDetails
+                        }
                     )
                 }
             }

@@ -16,7 +16,6 @@ fun CreateGroupScreen(
     onCreated: () -> Unit
 ) {
     var name by remember { mutableStateOf("") }
-    var currency by remember { mutableStateOf("USD") }
 
     Scaffold(
         topBar = {
@@ -43,18 +42,12 @@ fun CreateGroupScreen(
                 label = { Text("Group Name") },
                 modifier = Modifier.fillMaxWidth()
             )
-            TextField(
-                value = currency,
-                onValueChange = { currency = it },
-                label = { Text("Currency (e.g. USD, EUR)") },
-                modifier = Modifier.fillMaxWidth()
-            )
             
             Spacer(modifier = Modifier.weight(1f))
             
             Button(
                 onClick = {
-                    viewModel.createGroup(name, currency)
+                    viewModel.createGroup(name)
                     onCreated()
                 },
                 enabled = name.isNotBlank(),

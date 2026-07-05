@@ -2,10 +2,7 @@ package com.happyminds.thepattapp.presentation.groupdetails
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.happyminds.thepattapp.domain.models.Expense
-import com.happyminds.thepattapp.domain.models.Group
-import com.happyminds.thepattapp.domain.models.Settlement
-import com.happyminds.thepattapp.domain.models.User
+import com.happyminds.thepattapp.domain.models.*
 import com.happyminds.thepattapp.domain.repository.ExpenseRepository
 import com.happyminds.thepattapp.domain.services.DebtSimplifier
 import com.happyminds.thepattapp.domain.services.OcrService
@@ -15,7 +12,7 @@ import kotlinx.coroutines.launch
 import kotlin.random.Random
 
 class GroupDetailsViewModel(
-    private val groupId: String?, // null for Miscellaneous
+    private val groupId: String?,
     private val repository: ExpenseRepository,
     private val debtSimplifier: DebtSimplifier,
     private val splitCalculator: SplitCalculator,
@@ -34,32 +31,45 @@ class GroupDetailsViewModel(
     val allFriends: StateFlow<List<User>> = repository.getUsers()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
-    val settlements: StateFlow<List<Settlement>> = combine(expenses, group) { expenses, group ->
-        val currency = group?.baseCurrency ?: "USD"
-        debtSimplifier.simplify(expenses, currency)
+    val settlements: StateFlow<List<Settlement>> = expenses.map { expensesList ->
+        // Default to INR for simplicity in settlement calculation
+        debtSimplifier.simplify(expensesList, "INR")
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
     val isMiscellaneous: Boolean = groupId == null || groupId.isBlank()
 
-    fun addExpense(description: String, amount: Double, splitType: com.happyminds.thepattapp.domain.models.SplitType = com.happyminds.thepattapp.domain.models.SplitType.EQUAL) {
+    fun addAdvancedExpense(
+        description: String,
+        amount: Double,
+        payerId: String,
+        payeeIds: List<String>,
+        customSplit: Map<String, Double>? = null
+    ) {
         viewModelScope.launch {
-            val currentGroup = group.value
-            val memberIds = currentGroup?.members?.map { it.id }?.ifEmpty { listOf("current_user") } ?: listOf("current_user")
-            val splitAllocations = splitCalculator.calculateSplit(amount, memberIds, splitType)
+            val currency = "INR" // Default to INR
+            val splitAllocations = customSplit ?: run {
+                val share = amount / (payeeIds.size.takeIf { it > 0 } ?: 1)
+                payeeIds.associateWith { share }
+            }
             
             val expense = Expense(
                 id = Random.nextInt().toString(),
                 groupId = groupId?.takeIf { it.isNotBlank() },
                 description = description,
                 amount = amount,
-                currency = currentGroup?.baseCurrency ?: "USD",
+                currency = currency,
                 timestamp = 0,
-                payerAllocations = mapOf("current_user" to amount),
+                payerAllocations = mapOf(payerId to amount),
                 splitAllocations = splitAllocations,
-                splitType = splitType
+                splitType = if (customSplit == null) SplitType.EQUAL else SplitType.EXACT
             )
             repository.upsertExpense(expense)
         }
+    }
+
+    // Deprecated simple method
+    fun addExpense(description: String, amount: Double) {
+        addAdvancedExpense(description, amount, "current_user", group.value?.members?.map { it.id }?.plus("current_user") ?: listOf("current_user"))
     }
 
     fun addMember(name: String) {
@@ -78,13 +88,6 @@ class GroupDetailsViewModel(
         viewModelScope.launch {
             val updatedGroup = currentGroup.copy(members = currentGroup.members + user)
             repository.upsertGroup(updatedGroup)
-        }
-    }
-
-    fun settleGroup() {
-        val currentGroup = group.value ?: return
-        viewModelScope.launch {
-            repository.upsertGroup(currentGroup.copy(isSettled = true))
         }
     }
 

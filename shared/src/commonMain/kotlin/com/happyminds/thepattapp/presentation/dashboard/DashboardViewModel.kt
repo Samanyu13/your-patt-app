@@ -31,12 +31,11 @@ class DashboardViewModel(
         _showSettled.update { !it }
     }
 
-    fun createGroup(name: String, currency: String) {
+    fun createGroup(name: String) {
         viewModelScope.launch {
             val newGroup = Group(
                 id = Random.nextInt().toString(),
-                name = name,
-                baseCurrency = currency
+                name = name
             )
             repository.upsertGroup(newGroup)
         }
@@ -67,7 +66,7 @@ class DashboardViewModel(
                 groupId = groupId,
                 description = description,
                 amount = amount,
-                currency = group.baseCurrency,
+                currency = "INR", // Default to INR
                 timestamp = 0,
                 payerAllocations = mapOf("current_user" to amount),
                 splitAllocations = group.members.associate { it.id to (amount / (group.members.size.takeIf { it > 0 } ?: 1)) },

@@ -158,7 +158,7 @@ fun GroupItem(group: Group, onClick: () -> Unit) {
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
             Text(group.name, style = MaterialTheme.typography.titleLarge)
-            Text("Currency: ${group.baseCurrency}", style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.outline)
+            Text("Click to view details", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.outline)
         }
     }
 }

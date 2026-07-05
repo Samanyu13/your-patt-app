@@ -1,5 +1,6 @@
 .gradle
-/build/
+build/
+**/build/
 !gradle/wrapper/gradle-wrapper.jar
 
 ### IntelliJ IDEA ###
@@ -19,9 +20,6 @@ captures/
 bin/
 gen/
 local.properties
-/media/soman/New Volume/tests/ThePattApp/androidApp/build/
-/media/soman/New Volume/tests/ThePattApp/shared/build/
-/media/soman/New Volume/tests/ThePattApp/desktopApp/build/
 
 ### macOS ###
 .DS_Store

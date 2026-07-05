@@ -22,7 +22,8 @@ import com.happyminds.thepattapp.domain.models.User
 fun GroupDetailsScreen(
     viewModel: GroupDetailsViewModel,
     onBackClick: () -> Unit,
-    onShareInvite: (String) -> Unit
+    onShareInvite: (String) -> Unit,
+    onAddExpenseClick: () -> Unit
 ) {
     val group by viewModel.group.collectAsState()
     val expenses by viewModel.expenses.collectAsState()
@@ -30,8 +31,8 @@ fun GroupDetailsScreen(
     val allFriends by viewModel.allFriends.collectAsState()
     val isMisc = viewModel.isMiscellaneous
     
-    var showAddExpense by remember { mutableStateOf(false) }
     var showAddMember by remember { mutableStateOf(false) }
+    var showMembersList by remember { mutableStateOf(false) }
     var selectedTab by remember { mutableIntStateOf(0) }
     var showPersonalExpensePrompt by remember { mutableStateOf(false) }
 
@@ -41,8 +42,22 @@ fun GroupDetailsScreen(
                 title = { 
                     Column {
                         Text(if (isMisc) "Miscellaneous" else (group?.name ?: "Loading..."))
-                        if (!isMisc && group?.members?.isEmpty() == true) {
-                            Text("Only you are here", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.error)
+                        if (!isMisc) {
+                            val members = group?.members ?: emptyList()
+                            if (members.isEmpty()) {
+                                Text("No other members", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.outline)
+                            } else {
+                                Surface(
+                                    onClick = { showMembersList = true },
+                                    color = androidx.compose.ui.graphics.Color.Transparent
+                                ) {
+                                    Text(
+                                        text = "${members.size} member${if (members.size > 1) "s" else ""} >",
+                                        style = MaterialTheme.typography.labelSmall,
+                                        color = MaterialTheme.colorScheme.primary
+                                    )
+                                }
+                            }
                         }
                     }
                 },
@@ -64,7 +79,7 @@ fun GroupDetailsScreen(
                 if (!isMisc && group?.members?.isEmpty() == true) {
                     showPersonalExpensePrompt = true
                 } else {
-                    showAddExpense = true 
+                    onAddExpenseClick()
                 }
             }) {
                 Icon(Icons.Default.Add, contentDescription = "Add Expense")
@@ -80,12 +95,19 @@ fun GroupDetailsScreen(
             }
             
             if (isMisc || selectedTab == 0) {
-                ExpenseList(expenses)
+                ExpenseList(expenses, group?.members ?: emptyList())
             } else {
-                BalanceList(settlements)
+                BalanceList(settlements, group?.members ?: emptyList())
             }
         }
         
+        if (showMembersList) {
+            MembersDialog(
+                members = group?.members ?: emptyList(),
+                onDismiss = { showMembersList = false }
+            )
+        }
+
         if (showAddMember) {
             AddMemberDialog(
                 friends = allFriends,
@@ -101,16 +123,6 @@ fun GroupDetailsScreen(
             )
         }
 
-        if (showAddExpense) {
-            AddExpenseDialog(
-                onDismiss = { showAddExpense = false },
-                onAdd = { desc, amount ->
-                    viewModel.addExpense(desc, amount)
-                    showAddExpense = false
-                }
-            )
-        }
-
         if (showPersonalExpensePrompt) {
             AlertDialog(
                 onDismissRequest = { showPersonalExpensePrompt = false },
@@ -119,7 +131,7 @@ fun GroupDetailsScreen(
                 confirmButton = {
                     Button(onClick = { 
                         showPersonalExpensePrompt = false
-                        showAddExpense = true 
+                        onAddExpenseClick()
                     }) { Text("Proceed") }
                 },
                 dismissButton = {
@@ -131,7 +143,7 @@ fun GroupDetailsScreen(
 }
 
 @Composable
-fun ExpenseList(expenses: List<Expense>) {
+fun ExpenseList(expenses: List<Expense>, members: List<User>) {
     LazyColumn(
         contentPadding = PaddingValues(16.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
@@ -140,13 +152,13 @@ fun ExpenseList(expenses: List<Expense>) {
             item { Text("No expenses yet", style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.outline) }
         }
         items(expenses) { expense ->
-            ExpenseItem(expense)
+            ExpenseItem(expense, members)
         }
     }
 }
 
 @Composable
-fun BalanceList(settlements: List<Settlement>) {
+fun BalanceList(settlements: List<Settlement>, members: List<User>) {
     LazyColumn(
         contentPadding = PaddingValues(16.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
@@ -155,38 +167,89 @@ fun BalanceList(settlements: List<Settlement>) {
             item { Text("Everything is settled!", style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.outline) }
         }
         items(settlements) { settlement ->
-            SettlementItem(settlement)
+            SettlementItem(settlement, members)
         }
     }
 }
 
 @Composable
-fun ExpenseItem(expense: Expense) {
-    Card(modifier = Modifier.fillMaxWidth()) {
+fun ExpenseItem(expense: Expense, members: List<User>) {
+    val payerId = expense.payerAllocations.keys.firstOrNull()
+    val payerName = when (payerId) {
+        "current_user" -> "You"
+        else -> members.find { it.id == payerId }?.name ?: "Unknown"
+    }
+
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
+    ) {
         Row(
             modifier = Modifier.padding(16.dp),
-            horizontalArrangement = Arrangement.SpaceBetween
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = androidx.compose.ui.Alignment.CenterVertically
         ) {
-            Column {
+            Column(modifier = Modifier.weight(1f)) {
                 Text(expense.description, style = MaterialTheme.typography.titleMedium)
-                Text("Paid by you", style = MaterialTheme.typography.labelSmall)
+                Text(
+                    text = "Paid by $payerName",
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.outline
+                )
             }
-            Text("${expense.amount} ${expense.currency}", style = MaterialTheme.typography.titleLarge)
+            Text(
+                text = "${expense.amount} ${expense.currency}",
+                style = MaterialTheme.typography.titleLarge,
+                color = MaterialTheme.colorScheme.primary
+            )
         }
     }
 }
 
 @Composable
-fun SettlementItem(settlement: Settlement) {
+fun SettlementItem(settlement: Settlement, members: List<User>) {
+    val fromName = if (settlement.fromUserId == "current_user") "You" else members.find { it.id == settlement.fromUserId }?.name ?: settlement.fromUserId
+    val toName = if (settlement.toUserId == "current_user") "You" else members.find { it.id == settlement.toUserId }?.name ?: settlement.toUserId
+
     Card(
         modifier = Modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer)
     ) {
         Text(
-            "${settlement.fromUserId} owes ${settlement.toUserId} ${settlement.amount} ${settlement.currency}",
+            "$fromName owes $toName ${settlement.amount} ${settlement.currency}",
             modifier = Modifier.padding(16.dp)
         )
     }
+}
+
+@Composable
+fun MembersDialog(
+    members: List<User>,
+    onDismiss: () -> Unit
+) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text("Group Members") },
+        text = {
+            LazyColumn(modifier = Modifier.fillMaxWidth()) {
+                item {
+                    ListItem(
+                        headlineContent = { Text("You (current_user)") },
+                        overlineContent = { Text("Payer/Member") }
+                    )
+                }
+                items(members) { member ->
+                    ListItem(
+                        headlineContent = { Text(member.name) },
+                        supportingContent = { if (member.isPlaceholder) Text("Placeholder") }
+                    )
+                }
+            }
+        },
+        confirmButton = {
+            TextButton(onClick = onDismiss) { Text("Close") }
+        }
+    )
 }
 
 @Composable
@@ -221,34 +284,6 @@ fun AddMemberDialog(
         },
         confirmButton = {
             Button(onClick = { onAddManual(name) }, enabled = name.isNotBlank()) { Text("Add") }
-        },
-        dismissButton = {
-            TextButton(onClick = onDismiss) { Text("Cancel") }
-        }
-    )
-}
-
-@Composable
-fun AddExpenseDialog(
-    onDismiss: () -> Unit,
-    onAdd: (String, Double) -> Unit
-) {
-    var desc by remember { mutableStateOf("") }
-    var amount by remember { mutableStateOf("") }
-
-    AlertDialog(
-        onDismissRequest = onDismiss,
-        title = { Text("Add Expense") },
-        text = {
-            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                TextField(value = desc, onValueChange = { desc = it }, label = { Text("Description") })
-                TextField(value = amount, onValueChange = { amount = it }, label = { Text("Amount") })
-            }
-        },
-        confirmButton = {
-            Button(onClick = { onAdd(desc, amount.toDoubleOrNull() ?: 0.0) }, enabled = desc.isNotBlank() && amount.toDoubleOrNull() != null) {
-                Text("Add")
-            }
         },
         dismissButton = {
             TextButton(onClick = onDismiss) { Text("Cancel") }
