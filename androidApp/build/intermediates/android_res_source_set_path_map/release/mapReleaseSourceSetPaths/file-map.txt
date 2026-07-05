@@ -1,0 +1,42 @@
+com.happyminds.thepattapp.androidApp-lifecycle-livedata-core-2.11.0-beta01-0 /home/soman/.gradle/caches/9.1.0/transforms/036bb76efc1c76df97c2b57cdd78f178/transformed/lifecycle-livedata-core-2.11.0-beta01/res
+com.happyminds.thepattapp.androidApp-lifecycle-process-2.11.0-beta01-1 /home/soman/.gradle/caches/9.1.0/transforms/0412e987e70e66623ad9ffe665702f21/transformed/lifecycle-process-2.11.0-beta01/res
+com.happyminds.thepattapp.androidApp-transition-1.6.0-2 /home/soman/.gradle/caches/9.1.0/transforms/0bf41a26dc6d37f0b466d1acd17b4ff1/transformed/transition-1.6.0/res
+com.happyminds.thepattapp.androidApp-lifecycle-viewmodel-3 /home/soman/.gradle/caches/9.1.0/transforms/10b8805a87d5d9fdf0cab602f73e9143/transformed/lifecycle-viewmodel/res
+com.happyminds.thepattapp.androidApp-startup-runtime-1.1.1-4 /home/soman/.gradle/caches/9.1.0/transforms/18fa0afce10530aa626f23cf736f98c0/transformed/startup-runtime-1.1.1/res
+com.happyminds.thepattapp.androidApp-lifecycle-runtime-5 /home/soman/.gradle/caches/9.1.0/transforms/19f1c3540515ae82a56ec9f75123c196/transformed/lifecycle-runtime/res
+com.happyminds.thepattapp.androidApp-window-1.5.0-6 /home/soman/.gradle/caches/9.1.0/transforms/23483dd4209df4fcc08e1a49455885e5/transformed/window-1.5.0/res
+com.happyminds.thepattapp.androidApp-lifecycle-livedata-core-ktx-2.11.0-beta01-7 /home/soman/.gradle/caches/9.1.0/transforms/23a57a9238a1ace6c4208f1efd2100bd/transformed/lifecycle-livedata-core-ktx-2.11.0-beta01/res
+com.happyminds.thepattapp.androidApp-room-runtime-release-8 /home/soman/.gradle/caches/9.1.0/transforms/2740a3063e36e5177cd9cf03d9156f37/transformed/room-runtime-release/res
+com.happyminds.thepattapp.androidApp-activity-compose-1.13.0-9 /home/soman/.gradle/caches/9.1.0/transforms/300f486e098721dc047335dfb80c1487/transformed/activity-compose-1.13.0/res
+com.happyminds.thepattapp.androidApp-emoji2-1.4.0-10 /home/soman/.gradle/caches/9.1.0/transforms/31c3df8e59d88f31bd5266f4738be50d/transformed/emoji2-1.4.0/res
+com.happyminds.thepattapp.androidApp-core-ktx-1.18.0-11 /home/soman/.gradle/caches/9.1.0/transforms/5c83b0bd382dd983451f3b378e872757/transformed/core-ktx-1.18.0/res
+com.happyminds.thepattapp.androidApp-lifecycle-viewmodel-ktx-2.11.0-beta01-12 /home/soman/.gradle/caches/9.1.0/transforms/672cc60456bb08e749d15a592c8a3f37/transformed/lifecycle-viewmodel-ktx-2.11.0-beta01/res
+com.happyminds.thepattapp.androidApp-profileinstaller-1.4.0-13 /home/soman/.gradle/caches/9.1.0/transforms/733efe84c2a42cd96ae948323002ba9c/transformed/profileinstaller-1.4.0/res
+com.happyminds.thepattapp.androidApp-core-viewtree-1.0.0-14 /home/soman/.gradle/caches/9.1.0/transforms/757b0eb27b05810ab4613801cb90ef83/transformed/core-viewtree-1.0.0/res
+com.happyminds.thepattapp.androidApp-tracing-1.2.0-15 /home/soman/.gradle/caches/9.1.0/transforms/78d7b74629f5555b9b0907c72aa06bbc/transformed/tracing-1.2.0/res
+com.happyminds.thepattapp.androidApp-savedstate-ktx-1.4.0-16 /home/soman/.gradle/caches/9.1.0/transforms/7b5151b9074ce40fe08f24a7b7c3cd99/transformed/savedstate-ktx-1.4.0/res
+com.happyminds.thepattapp.androidApp-core-runtime-2.2.0-17 /home/soman/.gradle/caches/9.1.0/transforms/7beb101b7aa31c60c735e2919efdf047/transformed/core-runtime-2.2.0/res
+com.happyminds.thepattapp.androidApp-ui-18 /home/soman/.gradle/caches/9.1.0/transforms/7f1c8d3c22b3f538be7c2b56bad56d85/transformed/ui/res
+com.happyminds.thepattapp.androidApp-annotation-experimental-1.4.1-19 /home/soman/.gradle/caches/9.1.0/transforms/7f5de0a6166a9ca10e9836cd7c64d6db/transformed/annotation-experimental-1.4.1/res
+com.happyminds.thepattapp.androidApp-activity-ktx-1.13.0-20 /home/soman/.gradle/caches/9.1.0/transforms/8faee010b2c2ba9bb2658c0facae7bbd/transformed/activity-ktx-1.13.0/res
+com.happyminds.thepattapp.androidApp-graphics-path-1.0.1-21 /home/soman/.gradle/caches/9.1.0/transforms/91fe896ba0ab0df1acb79a8260f89cb8/transformed/graphics-path-1.0.1/res
+com.happyminds.thepattapp.androidApp-activity-1.13.0-22 /home/soman/.gradle/caches/9.1.0/transforms/96ab359e96c95179ce18b2c5723763d8/transformed/activity-1.13.0/res
+com.happyminds.thepattapp.androidApp-navigationevent-23 /home/soman/.gradle/caches/9.1.0/transforms/9b6e7abd9457692ecfb616aed91a2667/transformed/navigationevent/res
+com.happyminds.thepattapp.androidApp-runtime-saveable-24 /home/soman/.gradle/caches/9.1.0/transforms/9ca7e757b5c2adc3dd8babb76671e0a6/transformed/runtime-saveable/res
+com.happyminds.thepattapp.androidApp-foundation-25 /home/soman/.gradle/caches/9.1.0/transforms/a27c3cea1edbc48c8f997c01aabfed38/transformed/foundation/res
+com.happyminds.thepattapp.androidApp-savedstate-26 /home/soman/.gradle/caches/9.1.0/transforms/b5b19ae04498585097527fddeacbedf4/transformed/savedstate/res
+com.happyminds.thepattapp.androidApp-lifecycle-livedata-2.11.0-beta01-27 /home/soman/.gradle/caches/9.1.0/transforms/b8343bc2825a0d56251ba21b868b7806/transformed/lifecycle-livedata-2.11.0-beta01/res
+com.happyminds.thepattapp.androidApp-material3-28 /home/soman/.gradle/caches/9.1.0/transforms/c1c61b96ac48830d9276c2513c935eb0/transformed/material3/res
+com.happyminds.thepattapp.androidApp-sqlite-bundled-release-29 /home/soman/.gradle/caches/9.1.0/transforms/c764cc076fb65576088d1774e1ea8413/transformed/sqlite-bundled-release/res
+com.happyminds.thepattapp.androidApp-ui-graphics-30 /home/soman/.gradle/caches/9.1.0/transforms/cfae75c271b13b32d0897359d0d7dc28/transformed/ui-graphics/res
+com.happyminds.thepattapp.androidApp-ui-text-31 /home/soman/.gradle/caches/9.1.0/transforms/d3b1072483d1f8d9d46516697fee088c/transformed/ui-text/res
+com.happyminds.thepattapp.androidApp-customview-poolingcontainer-1.0.0-32 /home/soman/.gradle/caches/9.1.0/transforms/f1513d9f5097a2460798ee2f8b43fd69/transformed/customview-poolingcontainer-1.0.0/res
+com.happyminds.thepattapp.androidApp-core-1.18.0-33 /home/soman/.gradle/caches/9.1.0/transforms/fc8e79feaf3b48cb4c6b82c58bd8f332/transformed/core-1.18.0/res
+com.happyminds.thepattapp.androidApp-pngs-34 /media/soman/New Volume/tests/ThePattApp/androidApp/build/generated/res/pngs/release
+com.happyminds.thepattapp.androidApp-updated_navigation_xml-35 /media/soman/New Volume/tests/ThePattApp/androidApp/build/generated/updated_navigation_xml/release
+com.happyminds.thepattapp.androidApp-packageReleaseResources-36 /media/soman/New Volume/tests/ThePattApp/androidApp/build/intermediates/incremental/release/packageReleaseResources/merged.dir
+com.happyminds.thepattapp.androidApp-packageReleaseResources-37 /media/soman/New Volume/tests/ThePattApp/androidApp/build/intermediates/incremental/release/packageReleaseResources/stripped.dir
+com.happyminds.thepattapp.androidApp-release-38 /media/soman/New Volume/tests/ThePattApp/androidApp/build/intermediates/merged_res/release/mergeReleaseResources
+com.happyminds.thepattapp.androidApp-main-39 /media/soman/New Volume/tests/ThePattApp/androidApp/src/main/res
+com.happyminds.thepattapp.androidApp-release-40 /media/soman/New Volume/tests/ThePattApp/androidApp/src/release/res
+com.happyminds.thepattapp.androidApp-packageAndroidMainResources-41 /media/soman/New Volume/tests/ThePattApp/shared/build/intermediates/packaged_res/androidMain/packageAndroidMainResources/res
