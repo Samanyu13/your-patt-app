@@ -27,4 +27,6 @@ local.properties
 ### Unwanted Files ###
 text_README.md
 how
+how_2
+PROJECT_STRUCTURE.md
 .kotlin/
