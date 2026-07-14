@@ -2,7 +2,12 @@ package com.happyminds.thepattapp.presentation.groupdetails
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.happyminds.thepattapp.domain.models.*
+import com.happyminds.thepattapp.domain.models.Account
+import com.happyminds.thepattapp.domain.models.Expense
+import com.happyminds.thepattapp.domain.models.Group
+import com.happyminds.thepattapp.domain.models.Settlement
+import com.happyminds.thepattapp.domain.models.SplitType
+import com.happyminds.thepattapp.domain.models.User
 import com.happyminds.thepattapp.domain.repository.ExpenseRepository
 import com.happyminds.thepattapp.domain.services.DebtSimplifier
 import com.happyminds.thepattapp.domain.services.OcrService
@@ -37,6 +42,9 @@ class GroupDetailsViewModel(
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
     val isMiscellaneous: Boolean = groupId == null || groupId.isBlank()
+
+    val accounts: StateFlow<List<Account>> = repository.getAccounts()
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
     fun addAdvancedExpense(
         description: String,

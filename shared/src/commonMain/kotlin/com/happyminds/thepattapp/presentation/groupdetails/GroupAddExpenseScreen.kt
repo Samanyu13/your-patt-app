@@ -35,6 +35,7 @@ fun GroupAddExpenseScreen(
     onSuccess: () -> Unit
 ) {
     val group by viewModel.group.collectAsState()
+    val accounts by viewModel.accounts.collectAsState()
     val members = remember(group) {
         val list = mutableListOf(User(id = "current_user", name = "You"))
         group?.let { list.addAll(it.members) }
@@ -44,6 +45,7 @@ fun GroupAddExpenseScreen(
     var desc by remember { mutableStateOf("") }
     var amountStr by remember { mutableStateOf("") }
     var payer by remember { mutableStateOf(members.first()) }
+    var selectedAccount by remember(accounts) { mutableStateOf(accounts.firstOrNull()) }
     
     var showSplitDialog by remember { mutableStateOf(false) }
     var selectedPayees by remember(members) { mutableStateOf(members.toSet()) }
@@ -66,6 +68,7 @@ fun GroupAddExpenseScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
+                .imePadding()
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(20.dp)
         ) {
@@ -113,6 +116,39 @@ fun GroupAddExpenseScreen(
                                     expanded = false
                                 }
                             )
+                        }
+                    }
+                }
+            }
+
+            if (payer.id == "current_user") {
+                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    Text("Pay from Account:", style = MaterialTheme.typography.titleSmall)
+                    var accExpanded by remember { mutableStateOf(false) }
+                    ExposedDropdownMenuBox(
+                        expanded = accExpanded,
+                        onExpandedChange = { accExpanded = !accExpanded }
+                    ) {
+                        TextField(
+                            value = selectedAccount?.name ?: "Select Account",
+                            onValueChange = {},
+                            readOnly = true,
+                            trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = accExpanded) },
+                            modifier = Modifier.fillMaxWidth().menuAnchor()
+                        )
+                        ExposedDropdownMenu(
+                            expanded = accExpanded,
+                            onDismissRequest = { accExpanded = false }
+                        ) {
+                            accounts.forEach { account ->
+                                DropdownMenuItem(
+                                    text = { Text("${account.name} (₹${account.balance})") },
+                                    onClick = {
+                                        selectedAccount = account
+                                        accExpanded = false
+                                    }
+                                )
+                            }
                         }
                     }
                 }

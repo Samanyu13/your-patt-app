@@ -18,11 +18,14 @@ fun AddExpenseScreen(
     onSuccess: () -> Unit
 ) {
     val groups by viewModel.activeGroups.collectAsState()
+    val accounts by viewModel.accounts.collectAsState()
     
     var desc by remember { mutableStateOf("") }
     var amount by remember { mutableStateOf("") }
     var selectedGroup by remember { mutableStateOf<Group?>(null) }
-    var expanded by remember { mutableStateOf(false) }
+    var selectedAccount by remember(accounts) { mutableStateOf(accounts.firstOrNull()) }
+    var groupExpanded by remember { mutableStateOf(false) }
+    var accountExpanded by remember { mutableStateOf(false) }
 
     Scaffold(
         topBar = {
@@ -40,6 +43,7 @@ fun AddExpenseScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
+                .imePadding()
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
@@ -53,31 +57,60 @@ fun AddExpenseScreen(
                 value = amount,
                 onValueChange = { amount = it },
                 label = { Text("Amount") },
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                prefix = { Text("₹") }
             )
             
-            Text("Add to:", style = MaterialTheme.typography.labelMedium)
+            Text("Pay from Account:", style = MaterialTheme.typography.labelMedium)
+            ExposedDropdownMenuBox(
+                expanded = accountExpanded,
+                onExpandedChange = { accountExpanded = !accountExpanded }
+            ) {
+                TextField(
+                    value = selectedAccount?.name ?: "Select Account",
+                    onValueChange = {},
+                    readOnly = true,
+                    trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = accountExpanded) },
+                    modifier = Modifier.fillMaxWidth().menuAnchor()
+                )
+                ExposedDropdownMenu(
+                    expanded = accountExpanded,
+                    onDismissRequest = { accountExpanded = false }
+                ) {
+                    accounts.forEach { account ->
+                        DropdownMenuItem(
+                            text = { Text("${account.name} (₹${account.balance})") },
+                            onClick = {
+                                selectedAccount = account
+                                accountExpanded = false
+                            }
+                        )
+                    }
+                }
+            }
+
+            Text("Add to Split Group:", style = MaterialTheme.typography.labelMedium)
             
             ExposedDropdownMenuBox(
-                expanded = expanded,
-                onExpandedChange = { expanded = !expanded }
+                expanded = groupExpanded,
+                onExpandedChange = { groupExpanded = !groupExpanded }
             ) {
                 TextField(
                     value = selectedGroup?.name ?: "Miscellaneous (None)",
                     onValueChange = {},
                     readOnly = true,
-                    trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
+                    trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = groupExpanded) },
                     modifier = Modifier.fillMaxWidth().menuAnchor()
                 )
                 ExposedDropdownMenu(
-                    expanded = expanded,
-                    onDismissRequest = { expanded = false }
+                    expanded = groupExpanded,
+                    onDismissRequest = { groupExpanded = false }
                 ) {
                     DropdownMenuItem(
                         text = { Text("Miscellaneous (None)") },
                         onClick = {
                             selectedGroup = null
-                            expanded = false
+                            groupExpanded = false
                         }
                     )
                     HorizontalDivider()
@@ -86,7 +119,7 @@ fun AddExpenseScreen(
                             text = { Text(group.name) },
                             onClick = {
                                 selectedGroup = group
-                                expanded = false
+                                groupExpanded = false
                             }
                         )
                     }
@@ -94,7 +127,7 @@ fun AddExpenseScreen(
                     DropdownMenuItem(
                         text = { Text("+ Create New Group") },
                         onClick = {
-                            expanded = false
+                            groupExpanded = false
                             onCreateGroup()
                         }
                     )
@@ -106,17 +139,15 @@ fun AddExpenseScreen(
             Button(
                 onClick = { 
                     val amt = amount.toDoubleOrNull() ?: 0.0
+                    val accId = selectedAccount?.id ?: "acc1"
                     if (selectedGroup == null) {
-                        viewModel.addMiscExpense(desc, amt, "USD")
+                        viewModel.addMiscExpense(desc, amt, "INR", accId)
                     } else {
-                        // For simplicity in this flow, we could add a method to VM to add to specific group
-                        // or just use repository directly if we had access. 
-                        // Let's assume we add a method to VM.
-                        viewModel.addExpenseToGroup(selectedGroup!!.id, desc, amt)
+                        viewModel.addExpenseToGroup(selectedGroup!!.id, desc, amt, accId)
                     }
                     onSuccess()
                 },
-                enabled = desc.isNotBlank() && amount.toDoubleOrNull() != null,
+                enabled = desc.isNotBlank() && amount.toDoubleOrNull() != null && selectedAccount != null,
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text("Add Expense")
