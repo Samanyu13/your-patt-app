@@ -9,6 +9,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.happyminds.thepattapp.domain.models.Group
 
+import com.happyminds.thepattapp.ui.components.PattTextField
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddExpenseScreen(
@@ -33,9 +35,13 @@ fun AddExpenseScreen(
                 title = { Text("Add New Expense") },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back", tint = MaterialTheme.colorScheme.onPrimary)
                     }
-                }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    titleContentColor = MaterialTheme.colorScheme.onPrimary
+                )
             )
         }
     ) { padding ->
@@ -47,16 +53,16 @@ fun AddExpenseScreen(
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            TextField(
+            PattTextField(
                 value = desc,
                 onValueChange = { desc = it },
-                label = { Text("Description") },
+                label = "Description",
                 modifier = Modifier.fillMaxWidth()
             )
-            TextField(
+            PattTextField(
                 value = amount,
                 onValueChange = { amount = it },
-                label = { Text("Amount") },
+                label = "Amount",
                 modifier = Modifier.fillMaxWidth(),
                 prefix = { Text("₹") }
             )
@@ -66,9 +72,10 @@ fun AddExpenseScreen(
                 expanded = accountExpanded,
                 onExpandedChange = { accountExpanded = !accountExpanded }
             ) {
-                TextField(
+                PattTextField(
                     value = selectedAccount?.name ?: "Select Account",
                     onValueChange = {},
+                    label = "Account",
                     readOnly = true,
                     trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = accountExpanded) },
                     modifier = Modifier.fillMaxWidth().menuAnchor()
@@ -95,9 +102,10 @@ fun AddExpenseScreen(
                 expanded = groupExpanded,
                 onExpandedChange = { groupExpanded = !groupExpanded }
             ) {
-                TextField(
+                PattTextField(
                     value = selectedGroup?.name ?: "Miscellaneous (None)",
                     onValueChange = {},
+                    label = "Group",
                     readOnly = true,
                     trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = groupExpanded) },
                     modifier = Modifier.fillMaxWidth().menuAnchor()

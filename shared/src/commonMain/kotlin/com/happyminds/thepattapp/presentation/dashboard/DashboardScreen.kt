@@ -116,10 +116,11 @@ fun LedgerTransactionItem(transaction: LedgerTransaction) {
     ) {
         Column {
             Text(transaction.memo ?: "Transaction", style = MaterialTheme.typography.bodyLarge)
+            val categoryDisplay = transaction.categoryId?.replace("_", " -> ") ?: "Uncategorized"
             Text(
-                if (transaction.type == TransactionType.INCOME) "Income" else "Expense",
+                categoryDisplay,
                 style = MaterialTheme.typography.labelSmall,
-                color = MaterialTheme.colorScheme.outline
+                color = MaterialTheme.colorScheme.primary
             )
         }
         Text(

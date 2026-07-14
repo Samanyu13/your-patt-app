@@ -8,6 +8,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -26,6 +27,8 @@ import androidx.compose.ui.window.Dialog
 import com.happyminds.thepattapp.domain.models.User
 import kotlin.math.abs
 import kotlin.math.round
+
+import com.happyminds.thepattapp.ui.components.PattTextField
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -58,9 +61,13 @@ fun GroupAddExpenseScreen(
                 title = { Text("Add Expense") },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back", tint = MaterialTheme.colorScheme.onPrimary)
                     }
-                }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    titleContentColor = MaterialTheme.colorScheme.onPrimary
+                )
             )
         }
     ) { padding ->
@@ -72,17 +79,17 @@ fun GroupAddExpenseScreen(
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(20.dp)
         ) {
-            TextField(
+            PattTextField(
                 value = desc,
                 onValueChange = { desc = it },
-                label = { Text("What was this for?") },
+                label = "What was this for?",
                 modifier = Modifier.fillMaxWidth()
             )
 
-            TextField(
+            PattTextField(
                 value = amountStr,
                 onValueChange = { amountStr = it },
-                label = { Text("Amount") },
+                label = "Amount",
                 modifier = Modifier.fillMaxWidth(),
                 prefix = { Text("₹") },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
@@ -97,9 +104,10 @@ fun GroupAddExpenseScreen(
                     expanded = expanded,
                     onExpandedChange = { expanded = !expanded }
                 ) {
-                    TextField(
+                    PattTextField(
                         value = payer.name,
                         onValueChange = {},
+                        label = "Payer",
                         readOnly = true,
                         trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
                         modifier = Modifier.fillMaxWidth().menuAnchor()
@@ -129,9 +137,10 @@ fun GroupAddExpenseScreen(
                         expanded = accExpanded,
                         onExpandedChange = { accExpanded = !accExpanded }
                     ) {
-                        TextField(
+                        PattTextField(
                             value = selectedAccount?.name ?: "Select Account",
                             onValueChange = {},
+                            label = "Account",
                             readOnly = true,
                             trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = accExpanded) },
                             modifier = Modifier.fillMaxWidth().menuAnchor()
@@ -310,10 +319,15 @@ fun SplitSelectionDialog(
                                     updateSplitCascading(member.id, a)
                                 },
                                 modifier = Modifier.width(85.dp),
+                                shape = RoundedCornerShape(12.dp),
                                 suffix = { Text("%") },
                                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
                                 textStyle = MaterialTheme.typography.bodySmall,
-                                singleLine = true
+                                singleLine = true,
+                                colors = OutlinedTextFieldDefaults.colors(
+                                    focusedBorderColor = MaterialTheme.colorScheme.primary,
+                                    unfocusedBorderColor = MaterialTheme.colorScheme.outline.copy(alpha = 0.3f)
+                                )
                             )
 
                             val amountDisplay = (round(currentVal * 100) / 100.0).toString()
@@ -324,10 +338,15 @@ fun SplitSelectionDialog(
                                     updateSplitCascading(member.id, a)
                                 },
                                 modifier = Modifier.width(105.dp),
+                                shape = RoundedCornerShape(12.dp),
                                 prefix = { Text("₹") },
                                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
                                 textStyle = MaterialTheme.typography.bodySmall,
-                                singleLine = true
+                                singleLine = true,
+                                colors = OutlinedTextFieldDefaults.colors(
+                                    focusedBorderColor = MaterialTheme.colorScheme.primary,
+                                    unfocusedBorderColor = MaterialTheme.colorScheme.outline.copy(alpha = 0.3f)
+                                )
                             )
                         }
                     }

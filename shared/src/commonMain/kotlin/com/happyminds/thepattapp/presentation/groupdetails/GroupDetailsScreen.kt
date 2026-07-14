@@ -17,6 +17,8 @@ import com.happyminds.thepattapp.domain.models.Expense
 import com.happyminds.thepattapp.domain.models.Settlement
 import com.happyminds.thepattapp.domain.models.User
 
+import com.happyminds.thepattapp.ui.components.PattTextField
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun GroupDetailsScreen(
@@ -45,7 +47,7 @@ fun GroupDetailsScreen(
                         if (!isMisc) {
                             val members = group?.members ?: emptyList()
                             if (members.isEmpty()) {
-                                Text("No other members", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.outline)
+                                Text("No other members", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.7f))
                             } else {
                                 Surface(
                                     onClick = { showMembersList = true },
@@ -54,7 +56,7 @@ fun GroupDetailsScreen(
                                     Text(
                                         text = "${members.size} member${if (members.size > 1) "s" else ""} >",
                                         style = MaterialTheme.typography.labelSmall,
-                                        color = MaterialTheme.colorScheme.primary
+                                        color = MaterialTheme.colorScheme.onPrimary
                                     )
                                 }
                             }
@@ -62,16 +64,20 @@ fun GroupDetailsScreen(
                     }
                 },
                 navigationIcon = {
-                    IconButton(onClick = onBackClick) { Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back") }
+                    IconButton(onClick = onBackClick) { Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back", tint = MaterialTheme.colorScheme.onPrimary) }
                 },
                 actions = {
                     if (!isMisc) {
-                        IconButton(onClick = { showAddMember = true }) { Icon(Icons.Default.PersonAdd, contentDescription = "Add Member") }
+                        IconButton(onClick = { showAddMember = true }) { Icon(Icons.Default.PersonAdd, contentDescription = "Add Member", tint = MaterialTheme.colorScheme.onPrimary) }
                         IconButton(onClick = { 
                             group?.let { onShareInvite("https://thepattapp.com/join?token=${it.id}") } 
-                        }) { Icon(Icons.Default.Share, contentDescription = "Invite") }
+                        }) { Icon(Icons.Default.Share, contentDescription = "Invite", tint = MaterialTheme.colorScheme.onPrimary) }
                     }
-                }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    titleContentColor = MaterialTheme.colorScheme.onPrimary
+                )
             )
         },
         floatingActionButton = {
@@ -279,7 +285,7 @@ fun AddMemberDialog(
                     HorizontalDivider()
                 }
                 Text("Add new person:", style = MaterialTheme.typography.labelMedium)
-                TextField(value = name, onValueChange = { name = it }, label = { Text("Name") })
+                PattTextField(value = name, onValueChange = { name = it }, label = "Name", modifier = Modifier.fillMaxWidth())
             }
         },
         confirmButton = {

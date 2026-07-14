@@ -8,6 +8,8 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
+import com.happyminds.thepattapp.ui.components.PattTextField
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CreateGroupScreen(
@@ -23,9 +25,13 @@ fun CreateGroupScreen(
                 title = { Text("Create New Group") },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back", tint = MaterialTheme.colorScheme.onPrimary)
                     }
-                }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    titleContentColor = MaterialTheme.colorScheme.onPrimary
+                )
             )
         }
     ) { padding ->
@@ -37,10 +43,10 @@ fun CreateGroupScreen(
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            TextField(
+            PattTextField(
                 value = name,
                 onValueChange = { name = it },
-                label = { Text("Group Name") },
+                label = "Group Name",
                 modifier = Modifier.fillMaxWidth()
             )
             

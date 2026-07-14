@@ -20,6 +20,7 @@ fun OwnExpenseScreen(
 ) {
     val accounts by viewModel.accounts.collectAsState()
     val ledgerTransactions by viewModel.transactions.collectAsState()
+    val foodProgress by viewModel.foodBudgetProgress.collectAsState()
 
     Box(modifier = Modifier.fillMaxSize()) {
         LazyColumn(
@@ -36,7 +37,7 @@ fun OwnExpenseScreen(
             item {
                 Text("Monthly Budget", style = MaterialTheme.typography.titleMedium)
                 Spacer(Modifier.height(8.dp))
-                BudgetProgressCard("General Spending", 0.65, 0.45)
+                BudgetProgressCard("Food & Drinks", foodProgress, 0.45)
             }
 
             item {

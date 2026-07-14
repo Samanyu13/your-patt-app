@@ -32,8 +32,19 @@ class DashboardViewModel(
     val transactions: StateFlow<List<LedgerTransaction>> = repository.getTransactions()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
+    val categories: StateFlow<List<Category>> = repository.getCategories()
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+
     val netWorth: StateFlow<Double> = accounts.map { list ->
         list.sumOf { if (it.type == AccountType.CREDIT) -it.balance else it.balance }
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), 0.0)
+
+    val foodBudgetProgress: StateFlow<Double> = transactions.map { list ->
+        val foodExpenses = list.filter { 
+            it.type == TransactionType.EXPENSE && 
+            (it.categoryId == "food" || it.categoryId?.startsWith("food_") == true) 
+        }.sumOf { it.amount }
+        (foodExpenses / 5000.0).coerceIn(0.0, 1.0) // Mock budget of 5000
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), 0.0)
 
     fun toggleShowSettled() {
@@ -88,6 +99,21 @@ class DashboardViewModel(
                 splitType = SplitType.EQUAL
             )
             repository.upsertExpense(expense)
+        }
+    }
+
+    fun addLedgerEntry(amount: Double, memo: String, accountId: String, type: TransactionType, categoryId: String? = "uncategorized") {
+        viewModelScope.launch {
+            val trans = LedgerTransaction(
+                id = Random.nextInt().toString(),
+                amount = amount,
+                type = type,
+                sourceAccountId = accountId,
+                categoryId = categoryId,
+                timestamp = 0L,
+                memo = memo
+            )
+            repository.upsertTransaction(trans)
         }
     }
 }

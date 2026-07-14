@@ -20,6 +20,7 @@ fun HomeScreen(
     val accounts by viewModel.accounts.collectAsState()
     val netWorth by viewModel.netWorth.collectAsState()
     val ledgerTransactions by viewModel.transactions.collectAsState()
+    val foodProgress by viewModel.foodBudgetProgress.collectAsState()
 
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
@@ -28,6 +29,12 @@ fun HomeScreen(
     ) {
         item {
             NetWorthCard(netWorth)
+        }
+
+        item {
+            Text("Monthly Budget", style = MaterialTheme.typography.titleMedium)
+            Spacer(Modifier.height(8.dp))
+            BudgetProgressCard("Food & Drinks", foodProgress, 0.45)
         }
 
         item {

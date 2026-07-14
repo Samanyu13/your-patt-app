@@ -33,6 +33,7 @@ enum class Screen {
     SettledGroups,
     CreateGroup,
     AddExpense,
+    AddLedgerEntry,
     GroupAddExpense
 }
 
@@ -81,9 +82,17 @@ fun App() {
                                 )
                                 MainService.OwnExpense -> OwnExpenseScreen(
                                     viewModel = dashboardViewModel,
-                                    onAddExpense = { currentScreen = Screen.AddExpense }
+                                    onAddExpense = { currentScreen = Screen.AddLedgerEntry }
                                 )
                             }
+                        }
+                        Screen.AddLedgerEntry -> {
+                            val dashboardViewModel = koinInject<DashboardViewModel>()
+                            AddLedgerTransactionScreen(
+                                viewModel = dashboardViewModel,
+                                onBack = { currentScreen = Screen.Main },
+                                onSuccess = { currentScreen = Screen.Main }
+                            )
                         }
                         Screen.GroupDetails -> {
                             val groupId = currentGroupId!!

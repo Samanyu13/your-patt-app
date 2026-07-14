@@ -27,9 +27,33 @@ class MockExpenseRepository : ExpenseRepository {
     ))
     private val ledgerTransactions = MutableStateFlow<Map<String, LedgerTransaction>>(emptyMap())
     private val categories = MutableStateFlow<Map<String, Category>>(mapOf(
-        "cat1" to Category("cat1", "Food & Dining", icon = "restaurant"),
-        "cat2" to Category("cat2", "Shopping", icon = "shopping_cart"),
-        "cat3" to Category("cat3", "Transportation", icon = "directions_car")
+        "uncategorized" to Category("uncategorized", "Uncategorized", icon = "help_outline"),
+        
+        "food" to Category("food", "Food & Drinks", icon = "restaurant"),
+        "food_groceries" to Category("food_groceries", "Groceries", parentCategoryId = "food"),
+        "food_restaurants" to Category("food_restaurants", "Restaurants", parentCategoryId = "food"),
+        "food_cafe" to Category("food_cafe", "Cafe", parentCategoryId = "food"),
+        
+        "transport" to Category("transport", "Transportation", icon = "directions_car"),
+        "transport_public" to Category("transport_public", "Public Transport", parentCategoryId = "transport"),
+        "transport_taxi" to Category("transport_taxi", "Taxi", parentCategoryId = "transport"),
+        "transport_fuel" to Category("transport_fuel", "Fuel", parentCategoryId = "transport"),
+        
+        "housing" to Category("housing", "Housing", icon = "home"),
+        "housing_rent" to Category("housing_rent", "Rent", parentCategoryId = "housing"),
+        "housing_utilities" to Category("housing_utilities", "Utilities", parentCategoryId = "housing"),
+        
+        "entertainment" to Category("entertainment", "Entertainment", icon = "movie"),
+        "ent_movies" to Category("ent_movies", "Movies", parentCategoryId = "entertainment"),
+        "ent_games" to Category("ent_games", "Games", parentCategoryId = "entertainment"),
+        
+        "health" to Category("health", "Health & Personal Care", icon = "medical_services"),
+        "health_pharmacy" to Category("health_pharmacy", "Pharmacy", parentCategoryId = "health"),
+        "health_doctor" to Category("health_doctor", "Doctor", parentCategoryId = "health"),
+        
+        "shopping" to Category("shopping", "Shopping", icon = "shopping_bag"),
+        "shopping_clothing" to Category("shopping_clothing", "Clothing", parentCategoryId = "shopping"),
+        "shopping_electronics" to Category("shopping_electronics", "Electronics", parentCategoryId = "shopping")
     ))
     private val budgets = MutableStateFlow<Map<String, Budget>>(emptyMap())
 
