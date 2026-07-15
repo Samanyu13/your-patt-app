@@ -1,10 +1,12 @@
 package com.happyminds.thepattapp.presentation.dashboard
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.ui.draw.clip
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
@@ -12,10 +14,10 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
-import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
 import com.happyminds.thepattapp.domain.models.*
 
 @Composable
@@ -39,21 +41,42 @@ fun NetWorthCard(netWorth: Double) {
 }
 
 @Composable
-fun AccountCarousel(accounts: List<Account>) {
+fun AccountCarousel(
+    accounts: List<Account>,
+    onAddAccount: () -> Unit,
+    onDeleteAccount: (Account) -> Unit
+) {
     LazyRow(
         horizontalArrangement = Arrangement.spacedBy(12.dp),
-        contentPadding = PaddingValues(end = 16.dp)
+        contentPadding = PaddingValues(end = 16.dp),
+        verticalAlignment = Alignment.CenterVertically
     ) {
         items(accounts) { account ->
-            AccountCard(account)
+            AccountCard(
+                account = account,
+                onLongClick = { onDeleteAccount(account) }
+            )
+        }
+        item {
+            AddAccountCard(onClick = onAddAccount)
         }
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun AccountCard(account: Account) {
+fun AccountCard(
+    account: Account,
+    onLongClick: () -> Unit
+) {
     Card(
-        modifier = Modifier.width(160.dp).height(100.dp),
+        modifier = Modifier
+            .width(160.dp)
+            .height(100.dp)
+            .combinedClickable(
+                onClick = {},
+                onLongClick = onLongClick
+            ),
         colors = CardDefaults.cardColors(
             containerColor = if (account.type == AccountType.CREDIT) 
                 MaterialTheme.colorScheme.errorContainer 
@@ -74,6 +97,31 @@ fun AccountCard(account: Account) {
                 account.type.name,
                 style = MaterialTheme.typography.labelSmall,
                 color = MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = 0.6f)
+            )
+        }
+    }
+}
+
+@Composable
+fun AddAccountCard(onClick: () -> Unit) {
+    OutlinedCard(
+        onClick = onClick,
+        modifier = Modifier
+            .width(100.dp)
+            .height(100.dp),
+        shape = MaterialTheme.shapes.medium,
+        border = CardDefaults.outlinedCardBorder().copy(
+            brush = androidx.compose.ui.graphics.SolidColor(MaterialTheme.colorScheme.primary.copy(alpha = 0.5f))
+        )
+    ) {
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
+            Icon(
+                Icons.Default.Add,
+                contentDescription = "Add Account",
+                tint = MaterialTheme.colorScheme.primary
             )
         }
     }

@@ -25,6 +25,7 @@ interface ExpenseRepository {
     fun getAccounts(): Flow<List<Account>>
     fun getAccount(id: String): Flow<Account?>
     suspend fun upsertAccount(account: Account)
+    suspend fun deleteAccount(id: String)
     
     fun getTransactions(): Flow<List<LedgerTransaction>>
     fun getTransactionsByAccount(accountId: String): Flow<List<LedgerTransaction>>
@@ -35,4 +36,8 @@ interface ExpenseRepository {
     
     fun getBudgets(): Flow<List<Budget>>
     suspend fun upsertBudget(budget: Budget)
+
+    // Dev Tools
+    suspend fun clearAllData()
+    suspend fun populateMockData()
 }

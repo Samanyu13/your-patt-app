@@ -49,6 +49,27 @@ class DashboardViewModel(
         (foodExpenses / 5000.0).coerceIn(0.0, 1.0)
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), 0.0)
 
+    private val _isDevModeUnlocked = MutableStateFlow(false)
+    val isDevModeUnlocked: StateFlow<Boolean> = _isDevModeUnlocked.asStateFlow()
+
+    private val _isMockDataEnabled = MutableStateFlow(false)
+    val isMockDataEnabled: StateFlow<Boolean> = _isMockDataEnabled.asStateFlow()
+
+    fun unlockDevMode() {
+        _isDevModeUnlocked.value = true
+    }
+
+    fun toggleMockData(enabled: Boolean) {
+        viewModelScope.launch {
+            _isMockDataEnabled.value = enabled
+            if (enabled) {
+                repository.populateMockData()
+            } else {
+                repository.clearAllData()
+            }
+        }
+    }
+
     fun toggleShowSettled() {
         _showSettled.update { !it }
     }
@@ -66,6 +87,25 @@ class DashboardViewModel(
                 name = name
             )
             repository.upsertGroup(newGroup)
+        }
+    }
+
+    fun createAccount(name: String, type: AccountType, initialBalance: Double) {
+        viewModelScope.launch {
+            val account = Account(
+                id = Random.nextInt().toString(),
+                name = name,
+                type = type,
+                balance = initialBalance,
+                currency = "INR"
+            )
+            repository.upsertAccount(account)
+        }
+    }
+
+    fun deleteAccount(accountId: String) {
+        viewModelScope.launch {
+            repository.deleteAccount(accountId)
         }
     }
 

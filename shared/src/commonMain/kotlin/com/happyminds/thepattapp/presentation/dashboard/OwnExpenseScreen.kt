@@ -22,6 +22,9 @@ fun OwnExpenseScreen(
     val ledgerTransactions by viewModel.transactions.collectAsState()
     val foodProgress by viewModel.foodBudgetProgress.collectAsState()
 
+    var showAddAccountDialog by remember { mutableStateOf(false) }
+    var accountToDelete by remember { mutableStateOf<Account?>(null) }
+
     Box(modifier = Modifier.fillMaxSize()) {
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
@@ -31,7 +34,11 @@ fun OwnExpenseScreen(
             item {
                 Text("Your Accounts", style = MaterialTheme.typography.titleMedium)
                 Spacer(Modifier.height(8.dp))
-                AccountCarousel(accounts)
+                AccountCarousel(
+                    accounts = accounts,
+                    onAddAccount = { showAddAccountDialog = true },
+                    onDeleteAccount = { accountToDelete = it }
+                )
             }
 
             item {
@@ -63,6 +70,40 @@ fun OwnExpenseScreen(
             containerColor = MaterialTheme.colorScheme.primary
         ) {
             Icon(Icons.Default.Add, contentDescription = "Add Personal Expense")
+        }
+
+        if (showAddAccountDialog) {
+            AddAccountDialog(
+                onDismiss = { showAddAccountDialog = false },
+                onConfirm = { name, type, balance ->
+                    viewModel.createAccount(name, type, balance)
+                    showAddAccountDialog = false
+                }
+            )
+        }
+
+        accountToDelete?.let { account ->
+            AlertDialog(
+                onDismissRequest = { accountToDelete = null },
+                title = { Text("Delete Account") },
+                text = { Text("Are you sure you want to delete '${account.name}'? This action cannot be undone.") },
+                confirmButton = {
+                    Button(
+                        onClick = {
+                            viewModel.deleteAccount(account.id)
+                            accountToDelete = null
+                        },
+                        colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error)
+                    ) {
+                        Text("Delete")
+                    }
+                },
+                dismissButton = {
+                    TextButton(onClick = { accountToDelete = null }) {
+                        Text("Cancel")
+                    }
+                }
+            )
         }
     }
 }

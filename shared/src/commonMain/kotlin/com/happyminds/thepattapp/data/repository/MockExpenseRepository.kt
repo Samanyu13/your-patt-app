@@ -120,6 +120,12 @@ class MockExpenseRepository : ExpenseRepository {
         accounts.update { it + (account.id to account) }
     }
 
+    override suspend fun deleteAccount(id: String) {
+        accounts.update { it - id }
+        // Also cleanup transactions linked to this account if needed, 
+        // but for mock let's just delete the account.
+    }
+
     override fun getTransactions(): Flow<List<LedgerTransaction>> = ledgerTransactions.map { it.values.toList() }
     override fun getTransactionsByAccount(accountId: String): Flow<List<LedgerTransaction>> = 
         ledgerTransactions.map { it.values.filter { t -> t.sourceAccountId == accountId || t.destinationAccountId == accountId }.toList() }
@@ -166,5 +172,41 @@ class MockExpenseRepository : ExpenseRepository {
     override fun getBudgets(): Flow<List<Budget>> = budgets.map { it.values.toList() }
     override suspend fun upsertBudget(budget: Budget) {
         budgets.update { it + (budget.id to budget) }
+    }
+
+    override suspend fun clearAllData() {
+        groups.value = emptyMap()
+        expenses.value = emptyMap()
+        users.value = emptyMap()
+        ledgerTransactions.value = emptyMap()
+        accounts.value = accounts.value.mapValues { it.value.copy(balance = 0.0) }
+    }
+
+    override suspend fun populateMockData() {
+        // Populate some groups
+        val g1 = Group("1", "Trip to Goa")
+        val g2 = Group("2", "Roommates")
+        upsertGroup(g1)
+        upsertGroup(g2)
+
+        // Populate some users
+        val u1 = User("u1", "Alice")
+        val u2 = User("u2", "Bob")
+        upsertUser(u1)
+        upsertUser(u2)
+
+        // Add users to groups (Note: copy might be needed if Group model supports it)
+        // Groups currently don't have members in the mock init, let's fix that
+        groups.update { 
+            it + ("1" to g1.copy(members = listOf(u1, u2))) + ("2" to g2.copy(members = listOf(u1)))
+        }
+
+        // Populate some expenses
+        upsertExpense(Expense("e1", "1", "Hotel Booking", 5000.0, "INR", 0L, mapOf("current_user" to 5000.0), mapOf("current_user" to 1666.6, "u1" to 1666.6, "u2" to 1666.6)))
+        upsertExpense(Expense("e2", "2", "Electricity Bill", 1200.0, "INR", 0L, mapOf("current_user" to 1200.0), mapOf("current_user" to 600.0, "u1" to 600.0)))
+
+        // Populate some ledger transactions
+        upsertTransaction(LedgerTransaction("t1", 2000.0, TransactionType.INCOME, "acc1", null, null, 0L, "Salary Deposit"))
+        upsertTransaction(LedgerTransaction("t2", 150.0, TransactionType.EXPENSE, "acc2", null, "food_restaurants", 0L, "Dinner at Mainland China"))
     }
 }

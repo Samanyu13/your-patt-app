@@ -33,7 +33,8 @@ enum class Screen {
     CreateGroup,
     AddExpense,
     AddLedgerEntry,
-    GroupAddExpense
+    GroupAddExpense,
+    DeveloperTools
 }
 
 @Composable
@@ -81,7 +82,8 @@ fun AppMainContent(dashboardViewModel: DashboardViewModel) {
                                 currentScreen = Screen.GroupDetails
                             },
                             onSeeAllSplit = { currentService = MainService.Split },
-                            onSeeAllLedger = { currentService = MainService.OwnExpense }
+                            onSeeAllLedger = { currentService = MainService.OwnExpense },
+                            onOpenDevTools = { currentScreen = Screen.DeveloperTools }
                         )
                         MainService.Split -> SplitScreen(
                             viewModel = dashboardViewModel,
@@ -105,6 +107,12 @@ fun AppMainContent(dashboardViewModel: DashboardViewModel) {
                         viewModel = dashboardViewModel,
                         onBack = { currentScreen = Screen.Main },
                         onSuccess = { currentScreen = Screen.Main }
+                    )
+                }
+                Screen.DeveloperTools -> {
+                    DeveloperToolsScreen(
+                        viewModel = dashboardViewModel,
+                        onBack = { currentScreen = Screen.Main }
                     )
                 }
                 Screen.GroupDetails -> {
