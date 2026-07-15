@@ -37,7 +37,7 @@ fun OwnExpenseScreen(
             item {
                 Text("Monthly Budget", style = MaterialTheme.typography.titleMedium)
                 Spacer(Modifier.height(8.dp))
-                BudgetProgressCard("Food & Drinks", foodProgress, 0.45)
+                BudgetProgressCard("Food & Drinks", foodProgress, 0.0)
             }
 
             item {

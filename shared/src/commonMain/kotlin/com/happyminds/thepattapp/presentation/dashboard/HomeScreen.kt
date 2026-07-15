@@ -21,6 +21,7 @@ fun HomeScreen(
     val netWorth by viewModel.netWorth.collectAsState()
     val ledgerTransactions by viewModel.transactions.collectAsState()
     val foodProgress by viewModel.foodBudgetProgress.collectAsState()
+    val currentUser by viewModel.currentUser.collectAsState()
 
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
@@ -28,13 +29,28 @@ fun HomeScreen(
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         item {
+            Column {
+                Text(
+                    text = "Hello, ${currentUser?.name ?: "User"}!",
+                    style = MaterialTheme.typography.headlineMedium,
+                    fontWeight = androidx.compose.ui.text.font.FontWeight.Bold
+                )
+                Text(
+                    text = "Here's your financial overview",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f)
+                )
+            }
+        }
+
+        item {
             NetWorthCard(netWorth)
         }
 
         item {
             Text("Monthly Budget", style = MaterialTheme.typography.titleMedium)
             Spacer(Modifier.height(8.dp))
-            BudgetProgressCard("Food & Drinks", foodProgress, 0.45)
+            BudgetProgressCard("Food & Drinks", foodProgress, 0.0)
         }
 
         item {

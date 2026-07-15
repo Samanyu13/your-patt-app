@@ -6,7 +6,6 @@ import com.happyminds.thepattapp.domain.models.*
 import com.happyminds.thepattapp.domain.repository.ExpenseRepository
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
-import kotlinx.datetime.Clock
 import kotlin.random.Random
 
 class DashboardViewModel(
@@ -15,6 +14,9 @@ class DashboardViewModel(
 
     private val _showSettled = MutableStateFlow(false)
     val showSettled: StateFlow<Boolean> = _showSettled.asStateFlow()
+
+    val currentUser: StateFlow<User?> = repository.getCurrentUser()
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), null)
 
     val activeGroups: StateFlow<List<Group>> = repository.getGroups(includeSettled = false)
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
@@ -44,11 +46,17 @@ class DashboardViewModel(
             it.type == TransactionType.EXPENSE && 
             (it.categoryId == "food" || it.categoryId?.startsWith("food_") == true) 
         }.sumOf { it.amount }
-        (foodExpenses / 5000.0).coerceIn(0.0, 1.0) // Mock budget of 5000
+        (foodExpenses / 5000.0).coerceIn(0.0, 1.0)
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), 0.0)
 
     fun toggleShowSettled() {
         _showSettled.update { !it }
+    }
+
+    fun setUserName(name: String) {
+        viewModelScope.launch {
+            repository.setCurrentUserName(name)
+        }
     }
 
     fun createGroup(name: String) {

@@ -19,11 +19,12 @@ class MockExpenseRepository : ExpenseRepository {
     private val groups = MutableStateFlow<Map<String, Group>>(emptyMap())
     private val expenses = MutableStateFlow<Map<String, Expense>>(emptyMap())
     private val users = MutableStateFlow<Map<String, User>>(emptyMap())
+    private val currentUser = MutableStateFlow<User?>(null)
 
     private val accounts = MutableStateFlow<Map<String, Account>>(mapOf(
-        "acc1" to Account("acc1", "Checking Account", AccountType.CHECKING, 2500.0, "INR"),
-        "acc2" to Account("acc2", "Cash", AccountType.CASH, 500.0, "INR"),
-        "acc3" to Account("acc3", "Savings", AccountType.SAVINGS, 10000.0, "INR")
+        "acc1" to Account("acc1", "Checking Account", AccountType.CHECKING, 0.0, "INR"),
+        "acc2" to Account("acc2", "Cash", AccountType.CASH, 0.0, "INR"),
+        "acc3" to Account("acc3", "Savings", AccountType.SAVINGS, 0.0, "INR")
     ))
     private val ledgerTransactions = MutableStateFlow<Map<String, LedgerTransaction>>(emptyMap())
     private val categories = MutableStateFlow<Map<String, Category>>(mapOf(
@@ -102,8 +103,14 @@ class MockExpenseRepository : ExpenseRepository {
 
     override fun getUsers(): Flow<List<User>> = users.map { it.values.toList() }
 
+    override fun getCurrentUser(): Flow<User?> = currentUser
+
     override suspend fun upsertUser(user: User) {
         users.update { it + (user.id to user) }
+    }
+
+    override suspend fun setCurrentUserName(name: String) {
+        currentUser.value = User(id = "current_user", name = name)
     }
 
     // Ledger Methods

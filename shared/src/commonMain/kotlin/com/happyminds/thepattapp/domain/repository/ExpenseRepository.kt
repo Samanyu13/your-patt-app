@@ -17,7 +17,9 @@ interface ExpenseRepository {
 
     // Users
     fun getUsers(): Flow<List<User>>
+    fun getCurrentUser(): Flow<User?>
     suspend fun upsertUser(user: User)
+    suspend fun setCurrentUserName(name: String)
 
     // Ledger (Expense Manager)
     fun getAccounts(): Flow<List<Account>>
